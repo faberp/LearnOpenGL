@@ -396,11 +396,16 @@ public:
 	std::unique_ptr<AABB> boundingVolume;
 
 
-	// constructor, expects a filepath to a 3D model.
-	Entity(Model& model) : pModel{ &model }
-	{
-		boundingVolume = std::make_unique<AABB>(generateAABB(model));
-		//boundingVolume = std::make_unique<Sphere>(generateSphereBV(model));
+        // constructor, expects a model
+        Entity(const Model &model){
+                Model*tmp = new Model(model);
+                this->pModel = tmp;
+                boundingVolume = std::make_unique<AABB>(generateAABB(*tmp));
+                //boundingVolume = std::make_unique<Sphere>(generateSphereBV(tmp));
+        }
+	// destructor: remove the model again
+	virtual ~Entity(){
+		delete this->pModel;
 	}
 
 	AABB getGlobalAABB()
